@@ -98,10 +98,9 @@ public class TestRunner {
                                                  List<Annotation> annotations,
                                                  Method method) {
 
-        AtomicInteger count = new AtomicInteger();
+        int count = 0;
 
-        annotations.forEach(element -> {
-
+        for (Annotation element :annotations){
             boolean existUnresolvedAnnotations = setUnresolvedAnnotationsOnStaticMethods.contains(element.annotationType());
 
             if (existUnresolvedAnnotations) {
@@ -111,7 +110,7 @@ public class TestRunner {
             boolean existAllowedAnnotations = setAllowedAnnotationsOnStaticMethods.contains(element.annotationType());
 
             if (existAllowedAnnotations) {
-                count.getAndIncrement();
+                count++;
 
                 mapAnnotationsByPackage.computeIfPresent(element.annotationType(), (aClass, methods) -> {
                     methods.add(method);
@@ -120,9 +119,8 @@ public class TestRunner {
 
             }
 
-            if (count.get() > 1) throw new RuntimeException("There cannot be two static annotations on a method");
-
-        });
+            if (count > 1) throw new RuntimeException("There cannot be two static annotations on a method");
+        }
 
     }
 
@@ -160,24 +158,24 @@ public class TestRunner {
 
         if (!existMethodsWithBasicTestAnnotations && existMethodsWithUnavailableBasicTest) {
 
-            AtomicInteger count = new AtomicInteger();
+            int count =0;
 
-            annotations.forEach(element -> {
+            for(Annotation element :annotations){
                 if (setUnresolvedOtherAnnotations.contains(element.annotationType())) {
                     throw new RuntimeException("Unavailable use of annotations");
                 }
                 if (setAllowedOtherAnnotations.contains(element.annotationType())) {
 
-                    count.getAndIncrement();
+                    count++;
 
                     mapAnnotationsByPackage.computeIfPresent(element.annotationType(), (aClass, methods) -> {
                         methods.add(method);
                         return methods;
                     });
                 }
-            });
+            }
 
-            if (count.get() > 1) throw new RuntimeException("There cannot be two static annotations on a method");
+            if (count > 1) throw new RuntimeException("There cannot be two annotations on a method");
 
         }
 
@@ -202,10 +200,8 @@ public class TestRunner {
                                       Object instance) throws InvocationTargetException, IllegalAccessException {
         for (Method testMethod : testMethods) {
 
-            if (!beforeTestMethods.isEmpty()) {
-                for (Method method : beforeTestMethods) {
-                    method.invoke(instance);
-                }
+            for (Method method : beforeTestMethods) {
+                method.invoke(instance);
             }
 
             if (testMethod.isAnnotationPresent(CsvSource.class)) {
@@ -224,10 +220,8 @@ public class TestRunner {
                 testMethod.invoke(instance);
             }
 
-            if (!afterTestMethods.isEmpty()) {
-                for (Method method : afterTestMethods) {
-                    method.invoke(instance);
-                }
+            for (Method method : afterTestMethods) {
+                method.invoke(instance);
             }
 
         }
