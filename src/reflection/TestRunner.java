@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,6 +54,8 @@ public class TestRunner {
                 throw new RuntimeException("Methods with the @Test annotation specify such an annotation for the test method");
             }
 
+            checkingPriorityLimitForAnnotationsTest(testMethods);
+
             if (!beforeSuiteMethods.isEmpty()) {
                 beforeSuiteMethods.getFirst().invoke(instance);
             }
@@ -74,6 +75,17 @@ public class TestRunner {
                  NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void checkingPriorityLimitForAnnotationsTest(List<Method> testMethods){
+        testMethods.forEach(element -> {
+
+            int value = element.getAnnotation(Test.class).priority();
+
+            if (value > 11 || value < 1) {
+                throw new RuntimeException("The priority parameter in @Test is not in the range from 1 to 10 inclusive");
+            }
+        });
     }
 
     private static void generatingMapAnnotationsByPackage(Map<Class<? extends Annotation>, List<Method>> mapAnnotationsByPackage, Method[] methods) {
@@ -100,7 +112,7 @@ public class TestRunner {
 
         int count = 0;
 
-        for (Annotation element :annotations){
+        for (Annotation element : annotations) {
             boolean existUnresolvedAnnotations = setUnresolvedAnnotationsOnStaticMethods.contains(element.annotationType());
 
             if (existUnresolvedAnnotations) {
@@ -158,9 +170,9 @@ public class TestRunner {
 
         if (!existMethodsWithBasicTestAnnotations && existMethodsWithUnavailableBasicTest) {
 
-            int count =0;
+            int count = 0;
 
-            for(Annotation element :annotations){
+            for (Annotation element : annotations) {
                 if (setUnresolvedOtherAnnotations.contains(element.annotationType())) {
                     throw new RuntimeException("Unavailable use of annotations");
                 }
@@ -185,9 +197,6 @@ public class TestRunner {
         testMethods.sort((m1, m2) -> {
             int p1 = m1.getAnnotation(Test.class).priority();
             int p2 = m2.getAnnotation(Test.class).priority();
-
-            if ((p1 > 11 || p1 < 1) || (p2 > 11 || p2 < 1))
-                throw new RuntimeException("The priority parameter in @Test is not in the range from 1 to 10 inclusive");
 
             return Integer.compare(p2, p1);
         });
