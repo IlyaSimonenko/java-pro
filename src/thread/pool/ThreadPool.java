@@ -17,7 +17,7 @@ public class ThreadPool {
         formingWorkerThreads(capacity);
     }
 
-    public boolean isThreadStopped() {
+    public boolean isThreadsStopped() {
         for (WorkerThread workerThread : workerThreads) {
             if (workerThread.isAlive()) {
                 return false;
@@ -52,7 +52,7 @@ public class ThreadPool {
 
     private class WorkerThread extends Thread {
         public void run() {
-            Runnable task;
+            Runnable task = null;
             while (true) {
                 synchronized (ThreadPool.this) {
                     while (taskQueue.isEmpty() && !isShutdown) {
