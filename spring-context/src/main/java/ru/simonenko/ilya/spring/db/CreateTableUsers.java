@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 public class CreateTableUsers {
 
-    private final String createTableQuery = "CREATE TABLE IF NOT EXISTS users (id bigserial primary key, username varchar(255) unique)";
+    private final static String createTableQuery = "CREATE TABLE IF NOT EXISTS users (id bigserial primary key, username varchar(255) unique)";
 
     public CreateTableUsers(final DataSource dataSource) {
         createTable(dataSource);

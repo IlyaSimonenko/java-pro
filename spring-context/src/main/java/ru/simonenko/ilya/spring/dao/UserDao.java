@@ -10,11 +10,10 @@ import java.util.List;
 
 public class UserDao {
     private final DataSource dataSource;
-    private final String createUserQuery = "INSERT INTO users (username) VALUES (?)";
-    private final String deleteUserQuery = "DELETE FROM users WHERE id = ?";
-    private final String findUserByIdQuery = "SELECT * FROM users WHERE id = ?";
-
-    private final String findUsersQuery = "SELECT * FROM users";
+    private final static String createUserQuery = "INSERT INTO users (username) VALUES (?)";
+    private final static String deleteUserQuery = "DELETE FROM users WHERE id = ?";
+    private final static String findUserByIdQuery = "SELECT * FROM users WHERE id = ?";
+    private final static String findUsersQuery = "SELECT * FROM users";
 
     @Autowired
     public UserDao(final DataSource dataSource) {

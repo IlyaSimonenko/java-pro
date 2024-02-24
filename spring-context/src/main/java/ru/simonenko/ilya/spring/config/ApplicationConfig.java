@@ -6,8 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.yaml.snakeyaml.Yaml;
+import ru.simonenko.ilya.spring.dao.ProductDao;
 import ru.simonenko.ilya.spring.dao.UserDao;
+import ru.simonenko.ilya.spring.db.CreateTableProduct;
 import ru.simonenko.ilya.spring.db.CreateTableUsers;
+import ru.simonenko.ilya.spring.service.ProductService;
 import ru.simonenko.ilya.spring.service.UserService;
 
 import javax.sql.DataSource;
@@ -44,8 +47,14 @@ public class ApplicationConfig {
 
     @Bean
     @Order(2)
-    public CreateTableUsers createTable(DataSource dataSource) {
+    public CreateTableUsers createTableUsers(DataSource dataSource) {
         return new CreateTableUsers(dataSource);
+    }
+
+    @Bean
+    @Order(3)
+    public CreateTableProduct createTableProduct(DataSource dataSource) {
+        return new CreateTableProduct(dataSource);
     }
 
     @Bean
@@ -56,6 +65,16 @@ public class ApplicationConfig {
     @Bean
     public UserService userService(UserDao userDao) {
         return new UserService(userDao);
+    }
+
+    @Bean
+    public ProductDao productDao(DataSource dataSource) {
+        return new ProductDao(dataSource);
+    }
+
+    @Bean
+    public ProductService productService(ProductDao productDao) {
+        return new ProductService(productDao);
     }
 
     private Map<String, String> creatingMapBasedOnDatabase() {
