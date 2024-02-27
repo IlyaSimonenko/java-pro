@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+
+  datasource:
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 23f551q
+    driver-class-name: org.postgresql.Driver
