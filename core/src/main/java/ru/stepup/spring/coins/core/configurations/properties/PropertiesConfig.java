@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties({
         CoreProperties.class,
-        ExecutorProperties.class
+        ExecutorProperties.class,
+        ProductProperties.class
 })
 public class PropertiesConfig {
 }
