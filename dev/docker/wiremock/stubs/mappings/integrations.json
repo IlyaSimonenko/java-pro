@@ -1,0 +1,48 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/executor/payments/execute"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "payment-execute-200.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "headers": {
+          "Content-Type": {
+            "equalTo": "application/json"
+          }
+        },
+        "urlPathPattern": "/executor/payments/execute"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "payment-execute-200.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/executor/payments/execute/400"
+      },
+      "response": {
+        "status": 400,
+        "bodyFileName": "payment-execute-400.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}
