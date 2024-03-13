@@ -1,82 +1,38 @@
 package ru.simonenko.ilya.spring.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.simonenko.ilya.spring.db.UserEntity;
 import ru.simonenko.ilya.spring.dto.User;
+import ru.simonenko.ilya.spring.repository.UserRepository;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class UserDao {
-    private final DataSource dataSource;
-    private final static String createUserQuery = "INSERT INTO users (username) VALUES (?)";
-    private final static String deleteUserQuery = "DELETE FROM users WHERE id = ?";
-    private final static String findUserByIdQuery = "SELECT * FROM users WHERE id = ?";
-    private final static String findUsersQuery = "SELECT * FROM users";
+
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserDao(final DataSource dataSource) {
-        this.dataSource = dataSource;
+    public UserDao(final UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void createUser(User user) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(createUserQuery)) {
-
-            statement.setString(1, user.getUsername());
-
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userRepository.save(new UserEntity(user.getUsername()));
     }
 
     public void deleteUser(Long id) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(deleteUserQuery)) {
-
-            statement.setLong(1, id);
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userRepository.deleteById(id);
     }
 
-    public User getUserById(Long id) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(findUserByIdQuery)) {
-
-            statement.setLong(1, id);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return new User(resultSet.getLong("id"), resultSet.getString("username"));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public Optional<UserEntity> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
-    public List<User> getAllUsers() {
-
-        List<User> users = new ArrayList<>();
-
-        try (Connection conn = dataSource.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet resultSet = statement.executeQuery(findUsersQuery)) {
-            while (resultSet.next()) {
-                users.add(new User(resultSet.getLong("id"), resultSet.getString("username")));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
     }
 
 }
