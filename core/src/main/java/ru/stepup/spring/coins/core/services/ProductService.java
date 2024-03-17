@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.stepup.spring.coins.core.api.ProductRequest;
 import ru.stepup.spring.coins.core.api.ProductResponse;
-import ru.stepup.spring.coins.core.exceptions.ResourceDoesNotMeetConditionsException;
-import ru.stepup.spring.coins.core.exceptions.ResourceNotFoundException;
 import ru.stepup.spring.coins.core.integrations.IProductIntegration;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -29,21 +27,16 @@ public class ProductService {
         return productIntegration.getAllProductByUserId(userId);
     }
 
-    public ProductResponse getProductById(Long id) {
+    public Optional<ProductResponse> getProductById(Long id) {
         return productIntegration.getProductById(id)
-                .map(product -> {
-                    if (BigDecimal.ZERO.compareTo(product.getBalance()) < 0) {
-                        return new ProductResponse(
+                .map(product -> new ProductResponse(
                                 product.getId(),
                                 product.getUserId(),
                                 product.getAccountNumber(),
                                 product.getBalance(),
                                 product.getProductType()
-                        );
-                    }
-                    throw new ResourceDoesNotMeetConditionsException("Не достаточно средств у продукта");
-                })
-                .orElseThrow(() -> new ResourceNotFoundException("Запрашиваемого продукта с id: " + id + " не существует"));
+                        )
+                );
     }
 
 }

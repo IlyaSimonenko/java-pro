@@ -33,7 +33,7 @@ public class ProductIntegration implements IProductIntegration {
                 httpHeaders
         );
 
-        Product response = restTemplate.postForObject("/create", request, Product.class);
+        Product response = restTemplate.postForObject("/", request, Product.class);
 
         return new ProductResponse(
                 response.getId(),
@@ -46,8 +46,12 @@ public class ProductIntegration implements IProductIntegration {
 
     @Override
     public List<ProductResponse> getAllProductByUserId(Long userId) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        httpHeaders.set("userId", String.valueOf(userId));
 
-        List<Product> products = restTemplate.exchange("/user/{userId}", HttpMethod.GET, null, new ParameterizedTypeReference<List<Product>>() {
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
+        List<Product> products = restTemplate.exchange("/", HttpMethod.GET, entity, new ParameterizedTypeReference<List<Product>>() {
         }, userId).getBody();
 
         if (products != null && !products.isEmpty()) {

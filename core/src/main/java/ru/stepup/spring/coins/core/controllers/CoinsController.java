@@ -16,33 +16,15 @@ import java.util.List;
 @RequestMapping("/api/v1/coins")
 public class CoinsController {
     private final CoinsService coinsService;
-    private final ProductService productService;
 
     @Autowired
-    public CoinsController(final CoinsService coinsService,
-                           final ProductService productService) {
+    public CoinsController(final CoinsService coinsService) {
         this.coinsService = coinsService;
-        this.productService = productService;
     }
 
     @PostMapping("/execute")
     public ExecuteCoinsResponse execute(@RequestBody ExecuteCoinsRequest request) {
         return coinsService.execute(request);
-    }
-
-    @GetMapping("/products/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
-    }
-
-    @GetMapping("/products/user/{userId}")
-    public ResponseEntity<List<ProductResponse>> getAllProductByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(productService.getAllProductByUserId(userId));
-    }
-
-    @PostMapping("/products/create")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest product) {
-        return ResponseEntity.ok(productService.createProduct(product));
     }
 
 }

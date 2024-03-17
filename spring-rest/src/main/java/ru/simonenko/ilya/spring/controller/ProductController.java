@@ -24,12 +24,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Product>> getAllProductByUserId(@PathVariable Long userId) {
+    @GetMapping("/")
+    public ResponseEntity<List<Product>> getAllProductByUserId(@RequestHeader("userId") Long userId) {
         return ResponseEntity.ok(productService.getAllProductByUserId(userId));
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productService.createProduct(product));
     }
