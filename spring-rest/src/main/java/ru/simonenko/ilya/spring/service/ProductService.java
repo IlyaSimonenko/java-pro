@@ -2,37 +2,41 @@ package ru.simonenko.ilya.spring.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.simonenko.ilya.spring.dao.ProductDao;
 import ru.simonenko.ilya.spring.db.ProductEntity;
 import ru.simonenko.ilya.spring.dto.Product;
+import ru.simonenko.ilya.spring.repository.ProductRepository;
 
 import java.util.List;
 
 @Service
 public class ProductService {
-
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public Product createProduct(Product product) {
 
-        ProductEntity productEntity = productDao.createProduct(product);
+        ProductEntity productEntity = productRepository.save(new ProductEntity(
+                product.getUserId(),
+                product.getAccountNumber(),
+                product.getBalance(),
+                product.getProductType()
+        ));
 
         return createProduct(productEntity);
     }
 
     public List<Product> getAllProductByUserId(Long userId) {
-        return productDao.getAllProductByUserId(userId).stream()
+        return productRepository.findAllByUserId(userId).stream()
                 .map(this::createProduct)
                 .toList();
     }
 
     public Product getProductById(Long id) {
-        return productDao.getProductById(id)
+        return productRepository.findById(id)
                 .map(this::createProduct)
                 .orElse(null);
     }
