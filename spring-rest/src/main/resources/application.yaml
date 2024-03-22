@@ -13,3 +13,16 @@ spring:
     username: postgres
     password: 23f551q
     driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+
+  jpa:
+    database: postgresql
+
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
